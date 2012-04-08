@@ -8,9 +8,9 @@ sub     = context.socket ZMQ::SUB
 sub.connect 'tcp://127.0.0.1:5555'
 chans.each { |ch| sub.setsockopt ZMQ::SUBSCRIBE, ch }
 
-trap("INT") { context.close }
+trap("INT") { sub.close }
 
 while line = sub.recv
-  chan, user, msg = line.split ' ', 3
-  puts "##{chan} [#{user}]: #{msg}"
+  chan, msg = line.split ' ', 2
+  puts "[#{chan}] #{msg}"
 end

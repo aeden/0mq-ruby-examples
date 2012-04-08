@@ -2,14 +2,13 @@
 require 'zmq'
 
 context = ZMQ::Context.new
-chan    = ARGV[0]
-user    = ARGV[1]
 pub     = context.socket ZMQ::PUB
 pub.bind 'tcp://*:5555'
 
-trap("INT") { context.close }
+trap("INT") { pub.close }
 
-while msg = STDIN.gets
+while line = STDIN.gets
+  chan, msg = line.split ' ', 2
   msg.strip!
-  pub.send "#{chan} #{user} #{msg}"
+  pub.send "#{chan} #{msg}"
 end
